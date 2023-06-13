@@ -1,21 +1,14 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace IdentityServer4.EntityFramework.Mappers
+namespace IdentityServer4.EntityFramework.Storage.Mappers
 {
-    class AllowedSigningAlgorithmsConverter : 
-        IValueConverter<ICollection<string>, string>,
-        IValueConverter<string, ICollection<string>>
+    internal static class SharedInternalMappers
     {
-        public static AllowedSigningAlgorithmsConverter Converter = new AllowedSigningAlgorithmsConverter();
-
-        public string Convert(ICollection<string> sourceMember, ResolutionContext context)
+        internal static string MapAllowedSigningAlgorithms(ICollection<string> sourceMember)
         {
             if (sourceMember == null || !sourceMember.Any())
             {
@@ -24,7 +17,7 @@ namespace IdentityServer4.EntityFramework.Mappers
             return sourceMember.Aggregate((x, y) => $"{x},{y}");
         }
 
-        public ICollection<string> Convert(string sourceMember, ResolutionContext context)
+        internal static ICollection<string> MapAllowedSigningAlgorithms(string sourceMember)
         {
             var list = new HashSet<string>();
             if (!String.IsNullOrWhiteSpace(sourceMember))
@@ -37,5 +30,6 @@ namespace IdentityServer4.EntityFramework.Mappers
             }
             return list;
         }
+
     }
 }

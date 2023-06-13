@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 
     <PackageId>IdentityServer4.Storage</PackageId>
     <Description>Storage interfaces and models for IdentityServer4</Description>
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel" />
+    <PackageReference Include="IdentityModel" Version="6.1.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
