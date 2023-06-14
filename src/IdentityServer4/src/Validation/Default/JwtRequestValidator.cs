@@ -180,19 +180,8 @@ namespace IdentityServer4.Validation
                 tokenValidationParameters.ValidTypes = new[] { JwtClaimTypes.JwtTypes.AuthorizationRequest };
             }
 
-            // HACK - JObject are internal Microsoft ones, so we can't decode them, need to use Newtonsofts one
-            var oldSerializer = JsonExtensions.Serializer;
-            var oldDeserializer = JsonExtensions.Deserializer;
-            JsonExtensions.Serializer = JsonConvert.SerializeObject;
-            JsonExtensions.Deserializer = JsonConvert.DeserializeObject;
-
             Handler.ValidateToken(jwtTokenString, tokenValidationParameters, out var token);
-            
-            JsonExtensions.Serializer = oldSerializer;
-            JsonExtensions.Deserializer = oldDeserializer;
-            
 
-            
             return Task.FromResult((JwtSecurityToken)token);
         }
 

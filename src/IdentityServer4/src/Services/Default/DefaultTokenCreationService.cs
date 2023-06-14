@@ -136,19 +136,9 @@ namespace IdentityServer4.Services
         protected virtual Task<string> CreateJwtAsync(JwtSecurityToken jwt)
         {
             var handler = new JwtSecurityTokenHandler();
-            
-            // HACK: Json Serialization doesn't work for things like cnf claim,
-            // Switching to the Newtonsoft serializer for now but we want to revert this after serializing the token
-            
-            var oldSerializer = JsonExtensions.Serializer;
-            var oldDeserializer = JsonExtensions.Deserializer;
-            JsonExtensions.Serializer = JsonConvert.SerializeObject;
-            JsonExtensions.Deserializer = JsonConvert.DeserializeObject;
 
             var writtenToken = handler.WriteToken(jwt);
-            
-            JsonExtensions.Serializer = oldSerializer;
-            JsonExtensions.Deserializer = oldDeserializer;
+
             return Task.FromResult(writtenToken);
         }
     }
