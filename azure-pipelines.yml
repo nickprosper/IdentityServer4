@@ -24,16 +24,6 @@ steps:
   inputs:
     filePath: 'build.ps1'
 
-- task: NuGetCommand@2
-  inputs:
-    command: pack
-    packagesToPack: '**/*.csproj'
-    packDestination: '$(Build.ArtifactStagingDirectory)'
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
-
 - task: NuGetAuthenticate@0
   displayName: 'NuGet Authenticate'
 
@@ -42,4 +32,5 @@ steps:
   inputs:
     command: push
     publishVstsFeed: 'Blossom/IdentityServer4'
+    packagesToPush: '/nuget/*.nupkg'
     allowPackageConflicts: true
