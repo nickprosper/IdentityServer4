@@ -413,6 +413,7 @@ namespace IdentityServer4.Validation
         {
             try
             {
+                
                 var jwt = new JwtSecurityToken(token);
                 var clientId = jwt.Audiences.FirstOrDefault();
 

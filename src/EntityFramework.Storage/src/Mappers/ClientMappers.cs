@@ -12,9 +12,7 @@ using IdentityServer4.EntityFramework.Storage.Mappers;
 
 namespace IdentityServer4.EntityFramework.Mappers
 {
-    /// <summary>
-    /// Extension methods to map to/from entity/model for clients.
-    /// </summary>
+
     internal class ClientMappersInternal
     {
         internal Models.Client ToModel(Client entity)
@@ -34,7 +32,7 @@ namespace IdentityServer4.EntityFramework.Mappers
 
             if (entity.RedirectUris != null)
             {
-                target.RedirectUris = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Select(entity.RedirectUris, x => x == null ? default : x.ToString()));
+                target.RedirectUris = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Select(entity.RedirectUris, x => x == null ? default : x.RedirectUri));
             }
 
             if (entity.PostLogoutRedirectUris != null)
@@ -114,7 +112,7 @@ namespace IdentityServer4.EntityFramework.Mappers
             return target;
         }
 
-        private global::IdentityServer4.Models.Secret? MapToSecret(ClientSecret? source)
+        private global::IdentityServer4.Models.Secret MapToSecret(ClientSecret source)
         {
             if (source == null)
                 return default;
@@ -126,7 +124,7 @@ namespace IdentityServer4.EntityFramework.Mappers
             return target;
         }
 
-        private global::IdentityServer4.Models.ClientClaim? MapToClientClaim(ClientClaim? source)
+        private global::IdentityServer4.Models.ClientClaim MapToClientClaim(ClientClaim source)
         {
             if (source == null)
                 return default;
@@ -262,7 +260,7 @@ namespace IdentityServer4.EntityFramework.Mappers
             return clientProperties;
         }
 
-        private ClientClaim MapToClientClaim(Models.ClientClaim? source)
+        private ClientClaim MapToClientClaim(Models.ClientClaim source)
         {
             if (source == null)
                 return default;
@@ -272,7 +270,7 @@ namespace IdentityServer4.EntityFramework.Mappers
             return target;
         }
 
-        private ClientSecret MapToClientSecret(global::IdentityServer4.Models.Secret? source)
+        private ClientSecret MapToClientSecret(global::IdentityServer4.Models.Secret source)
         {
             if (source == null)
                 return default;
@@ -285,7 +283,9 @@ namespace IdentityServer4.EntityFramework.Mappers
         }
     }
 
-
+    /// <summary>
+    /// Extension methods to map to/from entity/model for clients.
+    /// </summary>
     public static class ClientMappers
     {
         static ClientMappers()

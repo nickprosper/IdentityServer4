@@ -13,6 +13,7 @@ using System;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using static IdentityServer4.IdentityServerConstants;
 
 namespace IdentityServer4.Services
@@ -75,6 +76,7 @@ namespace IdentityServer4.Services
 
             return await CreateJwtAsync(new JwtSecurityToken(header, payload));
         }
+        
 
         /// <summary>
         /// Creates the JWT header
@@ -134,7 +136,20 @@ namespace IdentityServer4.Services
         protected virtual Task<string> CreateJwtAsync(JwtSecurityToken jwt)
         {
             var handler = new JwtSecurityTokenHandler();
-            return Task.FromResult(handler.WriteToken(jwt));
+            
+            // HACK: Json Serialization doesn't work for things like cnf claim,
+            // Switching to the Newtonsoft serializer for now but we want to revert this after serializing the token
+            
+            var oldSerializer = JsonExtensions.Serializer;
+            var oldDeserializer = JsonExtensions.Deserializer;
+            JsonExtensions.Serializer = JsonConvert.SerializeObject;
+            JsonExtensions.Deserializer = JsonConvert.DeserializeObject;
+
+            var writtenToken = handler.WriteToken(jwt);
+            
+            JsonExtensions.Serializer = oldSerializer;
+            JsonExtensions.Deserializer = oldDeserializer;
+            return Task.FromResult(writtenToken);
         }
     }
 }
