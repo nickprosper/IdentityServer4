@@ -32,5 +32,4 @@ steps:
   inputs:
     command: push
     publishVstsFeed: 'Blossom/IdentityServer4'
-    packagesToPush: '/nuget/*.nupkg'
     allowPackageConflicts: true
