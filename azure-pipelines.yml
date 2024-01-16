@@ -15,7 +15,7 @@ variables:
   buildConfiguration: 'Release'
   Major: '7'
   Minor: '0'
-  Patch: '0'
+  Patch: '1'
 
 steps:
 - task: NuGetToolInstaller@1
