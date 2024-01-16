@@ -53,7 +53,7 @@ namespace IdentityServer4.Endpoints
             {
                 return new StatusCodeResult(HttpStatusCode.MethodNotAllowed);
             }
-
+            
             var user = await UserSession.GetUserAsync();
             var result = await ProcessAuthorizeRequestAsync(values, user, null);
 
