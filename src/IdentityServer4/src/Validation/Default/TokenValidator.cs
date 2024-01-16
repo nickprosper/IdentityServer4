@@ -72,12 +72,17 @@ namespace IdentityServer4.Validation
 
             if (clientId.IsMissing())
             {
-                clientId = GetClientIdFromJwt(token);
+                clientId = GetClientIdFromJwtClientClaim(token);
 
                 if (clientId.IsMissing())
                 {
-                    _logger.LogError("No clientId supplied, can't find id in identity token.");
-                    return Invalid(OidcConstants.ProtectedResourceErrors.InvalidToken);
+                    clientId = GetClientIdFromJwt(token);
+
+                    if (clientId.IsMissing())
+                    {
+                        _logger.LogError("No clientId supplied, can't find id in identity token.");
+                        return Invalid(OidcConstants.ProtectedResourceErrors.InvalidToken);
+                    }
                 }
             }
 
@@ -119,6 +124,8 @@ namespace IdentityServer4.Validation
             LogSuccess();
             return customResult;
         }
+
+
 
         public async Task<TokenValidationResult> ValidateAccessTokenAsync(string token, string expectedScope = null)
         {
@@ -426,6 +433,23 @@ namespace IdentityServer4.Validation
             }
         }
 
+        private string GetClientIdFromJwtClientClaim(string token)
+        {
+            try
+            {
+                
+                var jwt = new JwtSecurityToken(token);
+                var clientId = jwt.Claims.FirstOrDefault(c => c.Type.ToLower() == "client_id");
+
+                return clientId?.Value;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Malformed JWT token: {exception}", ex.Message);
+                return null;
+            }
+        }
+        
         private TokenValidationResult Invalid(string error)
         {
             return new TokenValidationResult
