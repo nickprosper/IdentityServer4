@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using IdentityServer4.Stores;
 using IdentityServer4.Configuration;
@@ -415,13 +416,36 @@ namespace IdentityServer4.Validation
             claims.AddRange(token.Claims);
             return claims;
         }
-
+        
+        public static byte[] FromHex(string hex)
+        {
+            hex = hex.Replace("-", "");
+            byte[] raw = new byte[hex.Length / 2];
+            for (int i = 0; i < raw.Length; i++)
+            {
+                raw[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            }
+            return raw;
+        }
+        
         private string GetClientIdFromJwt(string token)
         {
             try
             {
-                
-                var jwt = new JwtSecurityToken(token);
+                JwtSecurityToken jwt;
+
+                if (token.Length > 3 && token[2] == '-')
+                {
+                    // dealing with a byte array, somehow
+                    byte[] data = FromHex(token);
+                    var tokenString = Encoding.ASCII.GetString(data);
+                    jwt = new JwtSecurityToken(tokenString);
+                }
+                else
+                {
+                    jwt = new JwtSecurityToken(token);
+                }
+
                 var clientId = jwt.Audiences.FirstOrDefault();
 
                 return clientId;
@@ -437,8 +461,20 @@ namespace IdentityServer4.Validation
         {
             try
             {
+                JwtSecurityToken jwt;
+
+                if (token.Length > 3 && token[2] == '-')
+                {
+                    // dealing with a byte array, somehow
+                    byte[] data = FromHex(token);
+                    var tokenString = Encoding.ASCII.GetString(data);
+                    jwt = new JwtSecurityToken(tokenString);
+                }
+                else
+                {
+                    jwt = new JwtSecurityToken(token);
+                }
                 
-                var jwt = new JwtSecurityToken(token);
                 var clientId = jwt.Claims.FirstOrDefault(c => c.Type.ToLower() == "client_id");
 
                 return clientId?.Value;
