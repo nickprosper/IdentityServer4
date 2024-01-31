@@ -100,7 +100,7 @@ namespace IdentityServer4.Validation
             _logger.LogDebug("Client found: {clientId} / {clientName}", client.ClientId, client.ClientName);
 
             var keys = await _keys.GetValidationKeysAsync();
-            var result = await ValidateJwtAsync(token, keys, validateLifetime: validateLifetime);
+            var result = await ValidateJwtAsync(token, keys, audience: clientId, validateLifetime: validateLifetime);
 
             result.Client = client;
 
