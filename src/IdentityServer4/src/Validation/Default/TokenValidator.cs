@@ -70,10 +70,13 @@ namespace IdentityServer4.Validation
                 return Invalid(OidcConstants.ProtectedResourceErrors.InvalidToken);
             }
 
+            string audience = clientId;
+            
             if (clientId.IsMissing())
             {
                 clientId = GetClientIdFromJwtClientClaim(token);
-
+                audience = GetClientIdFromJwt(token);
+                
                 if (clientId.IsMissing())
                 {
                     clientId = GetClientIdFromJwt(token);
@@ -100,7 +103,7 @@ namespace IdentityServer4.Validation
             _logger.LogDebug("Client found: {clientId} / {clientName}", client.ClientId, client.ClientName);
 
             var keys = await _keys.GetValidationKeysAsync();
-            var result = await ValidateJwtAsync(token, keys, audience: clientId, validateLifetime: validateLifetime);
+            var result = await ValidateJwtAsync(token, keys, audience: audience, validateLifetime: validateLifetime);
 
             result.Client = client;
 
